@@ -69,10 +69,16 @@ public class LibroServicio {
         return libros;
     }
 
+    // READ
+    @Transactional(readOnly = true)
+    public Libro buscarPorIsbn(Long isbn){
+        return libroRepositorio.getReferenceById(isbn);
+    }
+
     // UPDATE
 
     @Transactional
-    public void modificarLibro(String titulo, Integer ejemplares, UUID idAutor, UUID idEditorial, Long idLibro) throws MiException {
+    public void modificarLibro(Long idLibro, String titulo, Integer ejemplares, UUID idAutor, UUID idEditorial) throws MiException {
         validar(titulo, idAutor, idEditorial);
         Optional<Libro> respuestaLibro = libroRepositorio.findById(idLibro);
 
