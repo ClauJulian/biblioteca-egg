@@ -2,8 +2,6 @@ package com.egg.biblioteca.controladores;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +23,7 @@ import com.egg.biblioteca.servicios.LibroServicio;
 @Controller // Esta clase es un Controlador
 @RequestMapping("/libro") // Recibira todas las solicitudes enviadas a "/libro"
 public class LibroControlador {
+
     @Autowired
     private LibroServicio libroServicio;
     @Autowired
@@ -41,33 +40,48 @@ public class LibroControlador {
         return "libro_form.html";
     }
 
-    @PostMapping("/registro") // POST /libro/registro
-    public String registro(@RequestParam(required = false) Long isbn, @RequestParam String titulo,
-            @RequestParam(required = false) Integer ejemplares, @RequestParam UUID idAutor,
-            @RequestParam UUID idEditorial, ModelMap model) {
+    @PostMapping("/registro")
+    public String registro(@RequestParam(required = false) Long isbn,
+            @RequestParam String titulo,
+            @RequestParam(required = false) Integer ejemplares,
+            @RequestParam String idAutor,
+            @RequestParam String idEditorial, ModelMap model) {
         try {
-            libroServicio.crearLibro(isbn, titulo, ejemplares, idAutor, idEditorial);
-            model.addAttribute("exito", "¡Se ha añadido un Libro a la biblioteca!");
-        } catch (MiException me) {
-            model.addAttribute("error", me.getMessage());
-            Logger.getLogger(LibroControlador.class.getName()).log(Level.SEVERE, null, me);
+            // Realizamos la conversión manual de String a UUID. En este caso, se convertirá solo si el ID no es nulo y no está vacío
+            UUID autorUUID = (idAutor != null && !idAutor.isEmpty()) ? UUID.fromString(idAutor) : null;
+            UUID editorialUUID = (idEditorial != null && !idEditorial.isEmpty()) ? UUID.fromString(idEditorial) : null;
+
+            if (autorUUID == null || editorialUUID == null) {
+                throw new MiException("Debe seleccionar un autor y una editorial válidos.");
+            }
+
+            libroServicio.crearLibro(isbn, titulo, ejemplares, autorUUID, editorialUUID);
+            model.put("exito", "El libro fue cargado correctamente.");
+
+        } catch (IllegalArgumentException ex) {
+            model.put("error", ex.getMessage());
             return "libro_form.html";
+        } catch (MiException ex) {
+            model.addAttribute("autores", autorServicio.listarAutores());
+            model.addAttribute("editoriales", editorialServicio.listarEditoriales());
+            model.put("error", ex.getMessage());
+
+            return "libro_form.html"; // volvemos a cargar el formulario.
         }
-        return "index.html";
+        return "inicio.html";
     }
 
     @GetMapping("/lista")
     public String listar(ModelMap modelo) {
 
         List<Libro> libros = libroServicio.listarLibros();
-        
+
         modelo.addAttribute("libros", libros);
         return "libro_list.html";
     }
 
-     // para modificar una entidad primero necesito traerla y luego modificarla
-    
-     @GetMapping("/modificar/{isbn}")
+    // para modificar una entidad primero necesito traerla y luego modificarla
+    @GetMapping("/modificar/{isbn}")
     public String modificar(@PathVariable Long isbn, ModelMap model) {
         Libro libro = libroServicio.buscarPorIsbn(isbn);
 
@@ -79,10 +93,10 @@ public class LibroControlador {
         model.addAttribute("editorialSeleccionada", libro.getEditorial().getId());  // UUID de la editorial actual para que ya aparezca seleccionado
         return "libro_modificar.html";
     }
-    /* String titulo, Integer ejemplares, UUID idAutor, UUID idEditorial, Long idLibro */
 
+    /* String titulo, Integer ejemplares, UUID idAutor, UUID idEditorial, Long idLibro */
     @PostMapping("/modificar/{isbn}")
-    public String modificar(@PathVariable Long isbn, String titulo,  Integer ejemplares, String idAutor, String idEditorial, ModelMap modelo) {
+    public String modificar(@PathVariable Long isbn, String titulo, Integer ejemplares, String idAutor, String idEditorial, ModelMap modelo) {
         try {
             UUID autorUUID = (idAutor != null && !idAutor.isEmpty()) ? UUID.fromString(idAutor) : null;
             UUID editorialUUID = (idEditorial != null && !idEditorial.isEmpty()) ? UUID.fromString(idEditorial) : null;
@@ -90,7 +104,6 @@ public class LibroControlador {
             if (autorUUID == null || editorialUUID == null) {
                 throw new MiException("Debe seleccionar un autor y una editorial válidos.");
             }
-
 
             libroServicio.modificarLibro(isbn, titulo, ejemplares, autorUUID, editorialUUID);
 

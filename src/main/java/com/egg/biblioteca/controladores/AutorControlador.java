@@ -40,7 +40,7 @@ public class AutorControlador {
             Logger.getLogger(AutorControlador.class.getName()).log(Level.SEVERE, null, me);
             return "autor_form.html";
         }
-        return "index.html";
+        return "inicio.html";
     }
 
     @GetMapping("/lista")
