@@ -91,11 +91,14 @@
                 </ul>
             </div>
         </nav>
-
+        
         <header class="header">
             <section class="contenedorMain">
                 <div class="tituloBiblioteca">
                     <a class="navbar-brand" href="#">BIBLIOTECA EGG</a>
+                </div>
+                <div sec:authorize="hasRole('ADMIN')">
+                    <p>Bienvenido, administrador.</p>
                 </div>
                 <div class="container contenedorLibros">
                     <p class="tituloLibros">Encontrá todos los Libros Aquí!</p>
