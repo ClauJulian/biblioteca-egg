@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,6 @@ import com.egg.biblioteca.excepciones.MiException;
 import com.egg.biblioteca.repositorios.UsuarioRepositorio;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.transaction.Transactional;
 
 @Service
 public class UsuarioServicio implements UserDetailsService {
@@ -55,9 +55,6 @@ public class UsuarioServicio implements UserDetailsService {
 
     }
 
-    ;
-
-
     @Transactional
     public void actualizar(MultipartFile archivo, UUID idUsuario, String nombre, String email, String password,
             String password2) throws MiException {
@@ -71,11 +68,10 @@ public class UsuarioServicio implements UserDetailsService {
 
             usuario.setPassword(new BCryptPasswordEncoder().encode(password));
 
-           // usuario.setRol(Rol.USER); -- Check, Ojoooooo!!
-
+            // usuario.setRol(Rol.USER); -- Check, Ojoooooo!!
             UUID idImagen = null;
-            if(usuario.getImagen() != null){ 
-                idImagen= usuario.getImagen().getId();
+            if (usuario.getImagen() != null) {
+                idImagen = usuario.getImagen().getId();
             }
             Imagen imagen = imagenServicio.actualizar(archivo, idImagen);
             usuario.setImagen(imagen);
@@ -119,8 +115,29 @@ public class UsuarioServicio implements UserDetailsService {
 
     }
 
+    @Transactional(readOnly = true)
+    public List<Usuario> listarUsuarios() {
+        List<Usuario> usuarios = new ArrayList<>();
+        usuarios = usuarioRepositorio.findAll();
+        return usuarios;
+    }
+
+    @Transactional
+    public void cambiarRol(UUID id) {
+        Optional<Usuario> respuesta = usuarioRepositorio.findById(id);
+
+        if (respuesta.isPresent()) {
+            Usuario usuario = respuesta.get();
+            if (usuario.getRol().equals(Rol.USER)) {
+                usuario.setRol(Rol.ADMIN);
+            } else if (usuario.getRol().equals(Rol.ADMIN)) {
+                usuario.setRol(Rol.USER);
+            }
+
+        }
+    }
+
     public Usuario getOne(UUID id) {
-        
         return usuarioRepositorio.findById(id).orElse(null);
     }
 
