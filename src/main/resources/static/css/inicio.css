@@ -10,22 +10,58 @@
     font-weight: 700;
 }
 
-.containerImg{
-    width: 20%;
-}
-
 .logo{
     width: 40%;
     margin: auto;
 }
 
-.main{
+.tituloBiblioteca{
+    width: 80%;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 500;
+}
+
+.headerInicio{
     background-image: url(../img/FondoZoom.jpg);
     background-size: cover;
     height: 400px;
     display: flex;
-    align-items: center;
-}
+    align-items: center;}
+
+    .contenedorMain {
+        width: 60%;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Alinea los elementos al centro */
+        justify-content: center; /* Centra verticalmente dentro del header */
+    }
+    
+    /* Ajustar los elementos internos para que se alineen correctamente */
+    .tituloBiblioteca,
+    .contenedorLibros,
+    .imagenContainer {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        width: 100%; /* Ocupa todo el ancho disponible */
+    }
+    
+    .imagenContainer {
+        display: flex;
+        justify-content: center; /* Alinea la imagen a la derecha */
+        align-items: center;
+        width: 60%;
+        
+    }
+    
+    .perfilImagen {
+        width: 100%; /* Ajusta el tamaño de la imagen */
+        height: auto;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+    
 
 .containerFooter{
     display: flex;
