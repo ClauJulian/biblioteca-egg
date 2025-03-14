@@ -1,10 +1,10 @@
-Proyecto Biblioteca
+# Proyecto Biblioteca
 
-Descripción
+## Descripción
 
 Este proyecto es un sistema de gestión de una biblioteca que permite administrar Autores, Libros y Editoriales mediante una aplicación web desarrollada con Spring Boot y ThymeLeaf. Implementa un sistema de roles con Spring Security, permitiendo accesos diferenciados para usuarios (USER) y administradores (ADMIN).
 
-Características
+## Características
 
 Gestión de Autores, Libros y Editoriales con operaciones CRUD.
 
@@ -16,7 +16,7 @@ Diferenciación de roles: los administradores pueden gestionar todos los recurso
 
 Persistencia de datos con Spring Data JPA y MySQL.
 
-Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 Java 17
 
@@ -34,7 +34,7 @@ MySQL como base de datos
 
 Lombok para reducción de código boilerplate
 
-Instalación y Configuración
+## Instalación y Configuración
 
 Clonar el repositorio:
 
@@ -51,7 +51,7 @@ Compilar y ejecutar el proyecto:
 mvn clean install
 mvn spring-boot:run
 
-Acceder a la aplicación:
+## Acceder a la aplicación:
 
 Usuario: http://localhost:8080/
 
@@ -125,6 +125,6 @@ Dependencias (pom.xml)
     </build>
 </project>
 """
-Contacto
+## Contacto
 
 Para cualquier consulta o contribución, no dudes en contactarme.
